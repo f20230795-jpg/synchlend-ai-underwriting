@@ -9,22 +9,24 @@ from scoring import calculate_ntc_score
 app = FastAPI(title="SynchLend Enterprise API")
 init_db()
 
+# SECURED: Locked down to only allow requests from your React frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], 
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# SECURED: Added max_length and lt (less than) limits to prevent payload attacks
 class ApplicationRequest(BaseModel):
-    applicant_name: str = Field(..., min_length=2)
+    applicant_name: str = Field(..., min_length=2, max_length=100)
     email: EmailStr = Field(...)
-    monthly_income: float = Field(..., gt=0)
+    monthly_income: float = Field(..., gt=0, lt=10000000)
     credit_score: float = Field(..., ge=300, le=850)
-    monthly_expenses: float = Field(..., ge=0)
-    requested_loan_amount: float = Field(..., gt=0)
-    employment_notes: str = Field(..., min_length=5)
+    monthly_expenses: float = Field(..., ge=0, lt=10000000)
+    requested_loan_amount: float = Field(..., gt=0, lt=50000000)
+    employment_notes: str = Field(..., min_length=5, max_length=1000)
 
 @app.post("/api/v1/underwrite")
 async def submit_application(data: ApplicationRequest):
