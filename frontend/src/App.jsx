@@ -6,10 +6,10 @@ function App() {
     applicant_name: 'Dhruv Singh',
     email: 'f20230795@pilani.bits-pilani.ac.in',
     monthly_income: '10000',
-    credit_score: '400',
-    monthly_expenses: '5000',
-    requested_loan_amount: '20000',
-    employment_notes: 'I work full time with a stable salary.'
+    credit_score: '680',
+    monthly_expenses: '3000',
+    requested_loan_amount: '12000',
+    employment_notes: 'I work full time as a lead software engineer at a corporate firm.'
   });
 
   const [decisionData, setDecisionData] = useState({});
@@ -39,84 +39,122 @@ function App() {
     }
   };
 
+  const getBadgeClass = (status) => {
+    if (status === 'APPROVED') return 'status-badge badge-approved';
+    if (status === 'DECLINED') return 'status-badge badge-declined';
+    return 'status-badge badge-pending';
+  };
+
   return (
-    <div style={{ backgroundColor: '#f1f5f9', minHeight: '100vh', padding: '3rem 1rem', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+    <div style={{ padding: '3rem 1rem' }}>
       
-      <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-        <h1 style={{ color: '#1e3a8a', fontSize: '2.5rem', fontWeight: '800', marginBottom: '0.5rem' }}>
-          SynchLend AI Underwriting
+      {/* 🚀 FIXED HEADER (No Overlap) */}
+      <div style={{ textAlign: 'center', marginBottom: '3rem', padding: '0 1rem' }}>
+        <h1 style={{ 
+          fontSize: '2.6rem', 
+          lineHeight: '1.2', 
+          margin: '0 auto 0.8rem auto', 
+          maxWidth: '800px',
+          color: '#1e3a8a',
+          fontWeight: '800',
+          letterSpacing: '-1px'
+        }}>
+          SynchLend Enterprise Underwriting Engine
         </h1>
-        <p style={{ color: '#64748b', fontSize: '1.1rem' }}>
-          Multi-Modal contextual credit decisioning for NTC customers.
+        <p className="subtitle" style={{ 
+          margin: '0 auto', 
+          lineHeight: '1.5',
+          maxWidth: '600px'
+        }}>
+          RAG Vector-Enhanced Credit Decisioning for NTC Borrowers
         </p>
       </div>
 
-      <div style={{ display: 'flex', gap: '2rem', maxWidth: '1000px', margin: '0 auto', flexWrap: 'wrap', justifyContent: 'center' }}>
+      <div style={{ display: 'flex', gap: '2rem', maxWidth: '1200px', margin: '0 auto', flexWrap: 'wrap', justifyContent: 'center' }}>
         
-        {/* LEFT COLUMN: Input Form */}
-        <div className="dashboard-card" style={{ flex: '1', minWidth: '320px' }}>
+        {/* LEFT PANEL: Data Ingestion */}
+        <div className="dashboard-card" style={{ flex: '1', minWidth: '350px' }}>
+          <h2 style={{ fontSize: '1.2rem', color: '#0f172a', marginBottom: '1.5rem', borderBottom: '2px solid #e2e8f0', paddingBottom: '0.5rem' }}>📄 Applicant Telemetry</h2>
           <form onSubmit={handleSubmit}>
-            <input type="text" name="applicant_name" value={formData.applicant_name} onChange={handleChange} placeholder="Applicant Name" required />
-            <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" required />
-            <input type="number" name="monthly_income" value={formData.monthly_income} onChange={handleChange} placeholder="Monthly Income" required />
-            <input type="number" name="credit_score" value={formData.credit_score} onChange={handleChange} placeholder="Credit Score" required />
-            <input type="number" name="monthly_expenses" value={formData.monthly_expenses} onChange={handleChange} placeholder="Monthly Expenses" required />
-            <input type="number" name="requested_loan_amount" value={formData.requested_loan_amount} onChange={handleChange} placeholder="Requested Amount" required />
+            <div className="input-group">
+              <label>Applicant Name</label>
+              <input type="text" name="applicant_name" value={formData.applicant_name} onChange={handleChange} required />
+            </div>
+            <div className="input-group">
+              <label>Email Address</label>
+              <input type="email" name="email" value={formData.email} onChange={handleChange} required />
+            </div>
             
-            {/* NEW: Unstructured Text Area */}
-            <textarea 
-              name="employment_notes" 
-              value={formData.employment_notes} 
-              onChange={handleChange} 
-              placeholder="Alternative Employment Notes (e.g. Gig worker, Freelance)" 
-              required
-              style={{ width: '100%', padding: '12px', marginBottom: '1rem', border: '2px solid #94a3b8', borderRadius: '6px', backgroundColor: '#f8fafc', color: '#0f172a', fontSize: '0.95rem', fontWeight: '600', boxSizing: 'border-box', minHeight: '80px', resize: 'vertical' }}
-            />
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <div className="input-group" style={{ flex: 1 }}>
+                <label>Monthly Income ($)</label>
+                <input type="number" name="monthly_income" value={formData.monthly_income} onChange={handleChange} required />
+              </div>
+              <div className="input-group" style={{ flex: 1 }}>
+                <label>Monthly Expenses ($)</label>
+                <input type="number" name="monthly_expenses" value={formData.monthly_expenses} onChange={handleChange} required />
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <div className="input-group" style={{ flex: 1 }}>
+                <label>Requested Loan ($)</label>
+                <input type="number" name="requested_loan_amount" value={formData.requested_loan_amount} onChange={handleChange} required />
+              </div>
+              <div className="input-group" style={{ flex: 1 }}>
+                <label>Alt Credit Score</label>
+                <input type="number" name="credit_score" value={formData.credit_score} onChange={handleChange} required />
+              </div>
+            </div>
+            
+            <div className="input-group">
+              <label>Alternative Data / Cash Flow Notes</label>
+              <textarea name="employment_notes" value={formData.employment_notes} onChange={handleChange} required style={{ minHeight: '80px', resize: 'vertical' }} />
+            </div>
             
             <button type="submit" className="submit-btn" disabled={isLoading}>
-              {isLoading ? 'Processing Neural Engine...' : 'Submit Application'}
+              {isLoading ? 'Processing Neural Engine...' : 'Run Diagnostics & Underwrite'}
             </button>
           </form>
         </div>
 
-        {/* RIGHT COLUMN: AI Decision Output */}
-        <div className="dashboard-card" style={{ flex: '1', minWidth: '320px', borderTop: '5px solid #10b981' }}>
+        {/* RIGHT PANEL: AI Decision Output */}
+        <div className="dashboard-card" style={{ flex: '1', minWidth: '350px' }}>
+          <h2 style={{ fontSize: '1.2rem', color: '#0f172a', marginBottom: '1.5rem', borderBottom: '2px solid #e2e8f0', paddingBottom: '0.5rem' }}>🧠 Neural Decision Matrix</h2>
           
-          <div>
-            <p className="result-label">Decision:</p>
-            <p className="result-value" style={{ color: decisionData.decision === 'APPROVED' ? '#16a34a' : decisionData.decision === 'DECLINED' ? '#dc2626' : '#0f172a' }}>
-              {decisionData.decision || "Pending"}
-            </p>
-          </div>
-
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
             <div>
-              <p className="result-label">Risk Score:</p>
-              <p className="result-value">{decisionData.riskScore || "---"}</p>
+              <p style={{ fontSize: '0.85rem', fontWeight: 700, color: '#64748b', margin: '0 0 5px 0' }}>FINAL VERDICT</p>
+              <div className={getBadgeClass(decisionData.decision)}>
+                {decisionData.decision || "AWAITING DATA"}
+              </div>
             </div>
-            {/* NEW: Displaying the AI Extracted Sentiment! */}
-            <div>
-              <p className="result-label" style={{ color: '#8b5cf6' }}>AI Stability Sentiment:</p>
-              <p className="result-value" style={{ color: '#8b5cf6' }}>
-                {decisionData.sentimentScore ? `${decisionData.sentimentScore}/10` : "---"}
+            <div style={{ textAlign: 'right' }}>
+              <p style={{ fontSize: '0.85rem', fontWeight: 700, color: '#64748b', margin: '0 0 5px 0' }}>RISK SCORE</p>
+              <p style={{ fontSize: '1.8rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                {decisionData.riskScore ? `${decisionData.riskScore}` : "---"}<span style={{fontSize: '1rem', color: '#94a3b8'}}>/850</span>
               </p>
             </div>
           </div>
 
-          <div>
-            <p className="result-label">Applicant:</p>
-            <p className="result-value" style={{fontSize: '1rem', marginBottom: '1rem'}}>{decisionData.applicant || "---"}</p>
+          {/* Hacker-Style Terminal Box for Vector RAG */}
+          <div className="rag-box">
+            <div className="rag-label">⚡ ChromaDB Vector Search Match</div>
+            <p className="rag-text">
+              {decisionData.policyContext ? `> ${decisionData.policyContext}` : "> Waiting for embedding query..."}
+            </p>
           </div>
 
-          <div>
-            <p className="result-label">AI Logic Trace:</p>
-            <p className="result-value" style={{ fontWeight: 500, fontSize: "1.05rem", lineHeight: "1.6" }}>
-              {decisionData.aiExplanation || "Awaiting multi-modal data ingestion..."}
+          {/* Clean Insight Box for AI Explanation */}
+          <div className="ai-box">
+            <div className="ai-label">✨ Generative AI Rationale</div>
+            <p className="ai-text">
+              {decisionData.aiExplanation || "Submit an application to view the LLM's dynamic reasoning trace."}
             </p>
           </div>
           
-          <div style={{ marginTop: '2rem', textAlign: 'center', color: '#94a3b8', fontSize: '0.85rem' }}>
-            Processed at: {decisionData.timestamp ? new Date(decisionData.timestamp).toLocaleString() : "---"}
+          <div style={{ marginTop: '2rem', textAlign: 'center', color: '#94a3b8', fontSize: '0.85rem', fontWeight: 600 }}>
+            Session ID: {decisionData.timestamp ? new Date(decisionData.timestamp).getTime() : "---"} | Secure
           </div>
           
         </div>

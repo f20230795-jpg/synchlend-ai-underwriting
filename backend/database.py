@@ -3,7 +3,10 @@ import sqlite3
 def init_db():
     conn = sqlite3.connect('synchlend.db')
     c = conn.cursor()
-    # We added employment_notes and sentiment_score to our memory!
+    
+    # 🔥 THIS LINE NUKES THE OLD TABLE SO WE CAN REBUILD IT
+    c.execute('DROP TABLE IF EXISTS applications')
+    
     c.execute('''
         CREATE TABLE IF NOT EXISTS applications (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -17,30 +20,32 @@ def init_db():
             sentiment_score INTEGER,
             final_decision TEXT,
             risk_score INTEGER,
+            policy_context TEXT,
             timestamp TEXT
         )
     ''')
     conn.commit()
     conn.close()
 
-def save_application(data, decision, risk_score, sentiment_score, timestamp):
+def save_application(data, decision, risk_score, sentiment_score, policy_context, timestamp):
     conn = sqlite3.connect('synchlend.db')
     c = conn.cursor()
     c.execute('''
         INSERT INTO applications 
-        (name, email, income, alt_score, expenses, requested_amount, employment_notes, sentiment_score, final_decision, risk_score, timestamp)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (name, email, income, alt_score, expenses, requested_amount, employment_notes, sentiment_score, final_decision, risk_score, policy_context, timestamp)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ''', (
-        data.get('name'), 
+        data.get('applicant_name'), 
         data.get('email'), 
-        data.get('input1'), 
-        data.get('input2'), 
-        data.get('input3'), 
-        data.get('input4'),
+        data.get('monthly_income'), 
+        data.get('credit_score'), 
+        data.get('monthly_expenses'), 
+        data.get('requested_loan_amount'),
         data.get('employment_notes'),
         sentiment_score,
         decision, 
-        risk_score, 
+        risk_score,
+        policy_context,
         timestamp
     ))
     conn.commit()

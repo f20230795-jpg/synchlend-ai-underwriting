@@ -1,0 +1,22 @@
+[
+  {
+    "id": "rule_corporate_salary",
+    "category": "Employment",
+    "rule_text": "Applicants with full-time corporate, engineering, or medical salaried roles demonstrate Tier 1 stability. Approve standard DTI limits without additional cash-flow verifications."
+  },
+  {
+    "id": "rule_freelance_gig",
+    "category": "Employment",
+    "rule_text": "For gig economy workers (e.g., Uber, Doordash) or freelancers, verify cash flow stability. Free monthly cash flow must cover at least 100% of proposed monthly loan installments."
+  },
+  {
+    "id": "rule_dti_cap",
+    "category": "DTI",
+    "rule_text": "Maximum Debt-to-Income (DTI) allowed for unsecured personal loans is 60%. Any application where calculated DTI exceeds 0.60 must result in an automatic decline."
+  },
+  {
+    "id": "rule_min_risk_score",
+    "category": "Scoring",
+    "rule_text": "Alternative risk scores below 550 indicate high default probability. Flag for manual review or decline unless applicant possesses substantial liquid reserves."
+  }
+]

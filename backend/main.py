@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, Header, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, EmailStr, Field
 import datetime
@@ -9,7 +9,6 @@ from scoring import calculate_ntc_score
 app = FastAPI(title="SynchLend Enterprise API")
 init_db()
 
-# SECURED: Locked down to only allow requests from your React frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"], 
@@ -18,7 +17,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# SECURED: Added max_length and lt (less than) limits to prevent payload attacks
 class ApplicationRequest(BaseModel):
     applicant_name: str = Field(..., min_length=2, max_length=100)
     email: EmailStr = Field(...)
@@ -30,7 +28,7 @@ class ApplicationRequest(BaseModel):
 
 @app.post("/api/v1/underwrite")
 async def submit_application(data: ApplicationRequest):
-    risk_score, sentiment_score, decision, explanation = calculate_ntc_score(
+    risk_score, sentiment_score, decision, explanation, policy_context = calculate_ntc_score(
         income=data.monthly_income,
         expenses=data.monthly_expenses,
         alt_score=data.credit_score,
@@ -39,16 +37,15 @@ async def submit_application(data: ApplicationRequest):
     )
     
     timestamp = datetime.datetime.now().isoformat()
-    
-    # Save to database
     safe_data_dict = data.model_dump()
-    save_application(safe_data_dict, decision, risk_score, sentiment_score, timestamp)
+    save_application(safe_data_dict, decision, risk_score, sentiment_score, policy_context, timestamp)
     
     return {
         "decision": decision,
         "applicant": data.applicant_name,
         "riskScore": risk_score,
         "sentimentScore": sentiment_score,
+        "policyContext": policy_context,
         "aiExplanation": explanation,
         "timestamp": timestamp
     }
